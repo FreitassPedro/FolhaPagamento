@@ -1,19 +1,12 @@
 import entities.Financeiro;
 import entities.Promotores;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Scanner;
 
-
-//ADICIONAR FUNÇÃO PARA PODER CITAR O PORCENTAGEM DO IR E INSS
-//DIFERENCIAR A LIST FINANCEIRO, POIS SDR POSSUI COMISSÕES, GARÇONS TAMBÉM SÃO DIFERENTES
-//CONFERIR VALE REFEIÇÃO ANTES DO 33167
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in).useLocale(Locale.forLanguageTag("pt-BR"));
-
-        HashMap<String, Double> valor = new HashMap<>();
+        LinkedHashMap<String, Double> valor = new LinkedHashMap<>();
         char escolha;
         //Pergunta qual dos grupos deseja!
         do {
@@ -25,21 +18,40 @@ public class Main {
 
         //Pergunta o valor para o usuário e adiciona a lista
         for (int i = 0; i < pendencias.length; i++) {
-            System.out.println(pendencias[i]);
+            String pergunta = pendencias[i];
+            if (i == 8 || i == 9) {
+                if (escolha == 'F' || escolha == 'f') {
+                    System.out.println("Porcentagem: ");
+                    String porcentagem = sc.next();
+                    pergunta = String.format(pergunta, porcentagem + "%");
+                }
+            }
+            if (i == 11 || i == 12) {
+                if (escolha == 'P' || escolha == 'p') {
+                    System.out.println("Porcentagem: ");
+                    String porcentagem = sc.next();
+                    pergunta = String.format(pergunta, porcentagem + "%");
+                }
+            }
+
+            System.out.println(pergunta);
             String valorPendenciaStr = sc.next();
             try {
                 double valorPendencia = Double.parseDouble(valorPendenciaStr.replace(",", "."));
-                valor.put(pendencias[i], valorPendencia);
+                valor.put(pergunta, valorPendencia);
             } catch (NumberFormatException e) {
                 System.out.println("Valor Inválido");
                 i--;
-            }}
-        imprimirPendencias(valor, pendencias);
+            }
+        }
+        imprimirPendencias(valor);
     }
-    public static void imprimirPendencias(HashMap<String, Double> valor, String[] pendencias) {
+
+
+    public static void imprimirPendencias(HashMap<String, Double> valor) {
         System.out.println("Folha de pagamento, referente Março/2023");
-        for (String pendencia : pendencias) {
-            Double preco = valor.get(pendencia);
+        for (Map.Entry<String, Double> pendencia : valor.entrySet()) {
+            Double preco = pendencia.getValue();
             if (preco != null && preco > 0) {
                 String precoString;
                 if (preco.intValue() >= 1000) {
@@ -47,7 +59,7 @@ public class Main {
                 } else {
                     precoString = String.format(Locale.forLanguageTag("pt-BR"), "%.2f", preco).replace(".", ",");
                 }
-                System.out.println(pendencia + precoString);
+                System.out.println(pendencia.getKey() + precoString);
             }
         }
     }

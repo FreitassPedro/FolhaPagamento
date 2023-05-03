@@ -10,7 +10,7 @@ public class Financeiro {
                 "(-)Vale Transporte R$ ",
                 "(-)Vale Refeição R$ ",
                 "(-)Plano de Saúde R$ ",
-                "(-)INSS % R$ ",
-                "(-)IR % R$ "
+                "(-)INSS %s R$ ",
+                "(-)IR %s R$ "
         };
     }
