@@ -13,6 +13,8 @@ public class Promotores {
             "(+)Refl Adic Noturno DSR R$ ",
             "(-)Vale Transporte R$ ",
             "(-)Vale Refeição R$ ",
+            "(-)Plano de Saúde R$ ",
+            "(-)Treinamento R$ ",
             "(-)INSS %s R$ ",
             "(-)IR %s R$ "
     };

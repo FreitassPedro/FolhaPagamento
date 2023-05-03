@@ -21,14 +21,14 @@ public class Main {
             String pergunta = pendencias[i];
             if (i == 8 || i == 9) {
                 if (escolha == 'F' || escolha == 'f') {
-                    System.out.println("Porcentagem: ");
+                    System.out.println("Porcentagem INSS/IR: ");
                     String porcentagem = sc.next();
                     pergunta = String.format(pergunta, porcentagem + "%");
                 }
             }
-            if (i == 11 || i == 12) {
+            if (i == 13 || i == 14) {
                 if (escolha == 'P' || escolha == 'p') {
-                    System.out.println("Porcentagem: ");
+                    System.out.println("Porcentagem INSS/IR: ");
                     String porcentagem = sc.next();
                     pergunta = String.format(pergunta, porcentagem + "%");
                 }
