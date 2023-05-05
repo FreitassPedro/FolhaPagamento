@@ -19,20 +19,12 @@ public class Main {
         //Pergunta o valor para o usuário e adiciona a lista
         for (int i = 0; i < pendencias.length; i++) {
             String pergunta = pendencias[i];
-            if (i == 8 || i == 9) {
-                if (escolha == 'F' || escolha == 'f') {
+                //PERGUNTA VALOR A SER ADICIONADO ANTES DO "%"
+                if (pendencias[i].equals( "(-)INSS %s R$ ") || pendencias[i].equals("(-)IR %s R$ ")) {
                     System.out.println("Porcentagem INSS/IR: ");
                     String porcentagem = sc.next();
                     pergunta = String.format(pergunta, porcentagem + "%");
                 }
-            }
-            if (i == 13 || i == 14) {
-                if (escolha == 'P' || escolha == 'p') {
-                    System.out.println("Porcentagem INSS/IR: ");
-                    String porcentagem = sc.next();
-                    pergunta = String.format(pergunta, porcentagem + "%");
-                }
-            }
 
             System.out.println(pergunta);
             String valorPendenciaStr = sc.next();
