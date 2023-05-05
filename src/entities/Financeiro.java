@@ -4,6 +4,8 @@ public class Financeiro {
         public static final String[] PENDENCIAS = {
                 "(+)Horas Normais R$ ",
                 "(+)Horas Extras R$ ",
+                "(+)Horas Feriado R$ ",
+                "(+)Horas Ferias R$ ",
                 "(+)Horas Extras 100% R$ ",
                 "(+)Pagto Bonificação R$ ",
                 "(+)Refl Extras DSR R$ ",
