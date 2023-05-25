@@ -1,19 +1,26 @@
 import entities.Financeiro;
 import entities.Promotores;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
 
     //ADICINAR FUNÇÃO DE VOLTAR AO i CASO DIGITAR VALOR ERRADO AO INVÉS DE REINICIAR O PROGRAMA
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        Locale.setDefault(new Locale("pt", "BR"));
 
         //Introdução ao Programa
         System.out.println("Digite o valor de cada pendência que aparecer, caso não existir, digite 0 que o programa não imprimirá!");
         System.out.println("Se digitou um número errado e deseja voltar, digite B.");
         System.out.println();
 
-        Scanner sc = new Scanner(System.in).useLocale(Locale.forLanguageTag("pt-BR"));
+        Scanner sc = new Scanner(System.in);
 
         LinkedHashMap<String, Double> valor = new LinkedHashMap<>();
 
@@ -61,10 +68,33 @@ public class Main {
         imprimirPendencias(valor);
     }
 
-    public static void imprimirPendencias(HashMap<String, Double> valor) {
+    //IDENTIFICA O MÊS ANTERIOR DO USUÁRIO
+    public static String dataAtual() {
+        LocalDate currentDate = LocalDate.now().minusMonths(1);
+        int currentYear = LocalDate.now().getYear();
+        Locale.setDefault(new Locale("pt", "BR"));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", Locale.getDefault());
+        String previousMonth = currentDate.format(formatter);
+        previousMonth = Character.toUpperCase(previousMonth.charAt(0)) + previousMonth.substring(1);
+
+        System.out.println(previousMonth);
+
+        return previousMonth + "/" + currentYear;
+    }
+
+    //IMPRIME TUDO QUE FOI DIGITADO NO LOOP FOR
+    public static void imprimirPendencias(HashMap<String, Double> valor) throws IOException {
         System.out.println();
         System.out.println();
-        System.out.println("Folha de pagamento, referente Abril/2023");
+        FileWriter fileWriter = new FileWriter("arquivo.txt");
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        String tituloFolha = "Folha de pagamento, referente " + dataAtual();
+
+        System.out.println(tituloFolha);
+        bufferedWriter.write(tituloFolha);
+        bufferedWriter.newLine();
         for (Map.Entry<String, Double> pendencia : valor.entrySet()) {
             Double preco = pendencia.getValue();
             if (preco != null && preco > 0) {
@@ -74,8 +104,13 @@ public class Main {
                 } else {
                     precoString = String.format(Locale.forLanguageTag("pt-BR"), "%.2f", preco).replace(".", ",");
                 }
-                System.out.println(pendencia.getKey() + precoString);
+                String saida = pendencia.getKey() + precoString;
+                bufferedWriter.write(saida);
+                bufferedWriter.newLine();
+                System.out.println(saida);
+
             }
         }
+        bufferedWriter.close();
     }
 }
