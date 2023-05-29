@@ -4,6 +4,9 @@ import entities.Promotores;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,6 +24,8 @@ public class Main {
         System.out.println();
 
         Scanner sc = new Scanner(System.in);
+        System.out.println("Digite nome do funcionario");
+        String nameEmployee = sc.nextLine();
 
         LinkedHashMap<String, Double> valor = new LinkedHashMap<>();
 
@@ -29,8 +34,8 @@ public class Main {
         do {
             System.out.println("Selecione o grupo:");
             System.out.println("Financeiro (f) / Promotor (p)");
-            escolha = sc.next().toUpperCase() .charAt(0);
-        } while (escolha != 'F' && escolha != 'P' );
+            escolha = sc.next().toUpperCase().charAt(0);
+        } while (escolha != 'F' && escolha != 'P');
 
         // seleciona as pendências correspondentes ao grupo escolhido
         String[] pendencias = escolha == 'F' ? Financeiro.PENDENCIAS : Promotores.PENDENCIAS;
@@ -40,20 +45,19 @@ public class Main {
             String pergunta = pendencias[i];
 
             // pergunta pela porcentagem de INSS ou IR, caso seja uma dessas pendências
-                if (pendencias[i].equals( "(-)INSS %s R$ ") || pendencias[i].equals("(-)IR %s R$ ")) {
-                    System.out.println("Porcentagem INSS/IR: ");
-                    String porcentagem = sc.next();
-                    pergunta = String.format(pergunta, porcentagem + "%");
-                }
+            if (pendencias[i].equals("(-)INSS %s R$ ") || pendencias[i].equals("(-)IR %s R$ ")) {
+                System.out.println("Porcentagem INSS/IR: ");
+                String porcentagem = sc.next();
+                pergunta = String.format(pergunta, porcentagem + "%");
+            }
 
             System.out.println(pergunta);
             String valorPendenciaStr = sc.next();
 
-            if (valorPendenciaStr.equalsIgnoreCase("b") ) {
+            if (valorPendenciaStr.equalsIgnoreCase("b")) {
                 System.out.println("Voltando!");
                 i--; //Volta uma pendência
-            }
-            else {
+            } else {
                 try {
                     double valorPendencia = Double.parseDouble(valorPendenciaStr.replace(",", "."));
                     valor.put(pergunta, valorPendencia);
@@ -65,11 +69,11 @@ public class Main {
         }
         sc.close();
         //Chama o método abaixo e imprime tudo
-        imprimirPendencias(valor);
+        imprimirPendencias(valor, nameEmployee);
     }
 
     //IDENTIFICA O MÊS ANTERIOR DO USUÁRIO
-    public static String dataAtual() {
+    public static String dataAnterior() {
         LocalDate currentDate = LocalDate.now().minusMonths(1);
         int currentYear = LocalDate.now().getYear();
         Locale.setDefault(new Locale("pt", "BR"));
@@ -78,19 +82,30 @@ public class Main {
         String previousMonth = currentDate.format(formatter);
         previousMonth = Character.toUpperCase(previousMonth.charAt(0)) + previousMonth.substring(1);
 
-        System.out.println(previousMonth);
 
         return previousMonth + "/" + currentYear;
     }
 
+    public static String dataSave() {
+        String localData = dataAnterior();
+        String[] partes = localData.split("/");
+
+        return partes[0];
+    }
+
     //IMPRIME TUDO QUE FOI DIGITADO NO LOOP FOR
-    public static void imprimirPendencias(HashMap<String, Double> valor) throws IOException {
+    public static void imprimirPendencias(HashMap<String, Double> valor, String nameEmployee) throws IOException {
         System.out.println();
         System.out.println();
-        FileWriter fileWriter = new FileWriter("arquivo.txt");
+        criadorRepositorio(nameEmployee);
+        dataSave();
+
+        String path = pathLocale(nameEmployee)
+                + "\\Folha.txt";
+        FileWriter fileWriter = new FileWriter(path);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-        String tituloFolha = "Folha de pagamento, referente " + dataAtual();
+        String tituloFolha = "Folha de pagamento, referente " + dataAnterior();
 
         System.out.println(tituloFolha);
         bufferedWriter.write(tituloFolha);
@@ -108,9 +123,34 @@ public class Main {
                 bufferedWriter.write(saida);
                 bufferedWriter.newLine();
                 System.out.println(saida);
-
             }
         }
         bufferedWriter.close();
+    }
+
+    //IDENTIF
+    public static String pathLocale(String nameEmployee) {
+        return ("C:\\Users\\CALL1\\Desktop\\SaidaFolha\\"
+                + dataSave()
+                + "\\"
+                + nameEmployee
+                + "\\");
+    }
+
+    public static void criadorRepositorio(String nameEmployee) {
+        Path directoryPath = Paths.get(pathLocale(nameEmployee));
+
+        // Verifica se o diretório já existe
+        if (Files.exists(directoryPath)) {
+            System.out.println("Directory already exists: " + directoryPath);
+        } else {
+            try {
+                // Cria o diretório
+                Files.createDirectories(directoryPath);
+                System.out.println("Directory created: " + directoryPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
