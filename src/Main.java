@@ -39,6 +39,8 @@ public class Main {
 
         // seleciona as pendências correspondentes ao grupo escolhido
         String[] pendencias = escolha == 'F' ? Financeiro.PENDENCIAS : Promotores.PENDENCIAS;
+        double ganhos = 0;
+        double descontos = 0;
 
         // Pergunta o valor para cada pendência e adiciona na lista;
         for (int i = 0; i < pendencias.length; i++) {
@@ -54,6 +56,7 @@ public class Main {
             System.out.println(pergunta);
             String valorPendenciaStr = sc.next();
 
+
             if (valorPendenciaStr.equalsIgnoreCase("b")) {
                 System.out.println("Voltando!");
                 i--; //Volta uma pendência
@@ -61,6 +64,13 @@ public class Main {
                 try {
                     double valorPendencia = Double.parseDouble(valorPendenciaStr.replace(",", "."));
                     valor.put(pergunta, valorPendencia);
+                    String maisOuMenos = pergunta.substring(1, 2);
+                    if (maisOuMenos.equals("+")) {
+                        ganhos += valorPendencia;
+                    }
+                    else {
+                        descontos += valorPendencia;
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Valor Inválido");
                     i--;
@@ -69,8 +79,7 @@ public class Main {
         }
         sc.close();
         //Chama o método abaixo e imprime tudo
-        imprimirPendencias(valor, nameEmployee);
-        System.out.println(employeeUpperCase(nameEmployee));
+        imprimirPendencias(valor, nameEmployee, ganhos, descontos);
     }
 
     //IDENTIFICA O DATA ANTERIOR DO USUÁRIO
@@ -96,7 +105,7 @@ public class Main {
     }
 
     //IMPRIME TUDO QUE FOI DIGITADO NO LOOP FOR
-    public static void imprimirPendencias(HashMap<String, Double> valor, String nameEmployee) throws IOException {
+    public static void imprimirPendencias(HashMap<String, Double> valor, String nameEmployee, Double ganhos, Double descontos) throws IOException {
         System.out.println();
         System.out.println();
         criadorRepositorio(nameEmployee);
@@ -127,6 +136,13 @@ public class Main {
                 System.out.println(saida);
             }
         }
+        bufferedWriter.newLine();
+        double salarioTotal = ganhos - descontos;
+        bufferedWriter.write("Ganhos: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", ganhos));
+        bufferedWriter.newLine();
+        bufferedWriter.write("Descontos: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", descontos));
+        bufferedWriter.newLine();
+        bufferedWriter.write("Salário Total: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", salarioTotal));
         bufferedWriter.close();
     }
 
@@ -158,8 +174,9 @@ public class Main {
         }
     }
 
+    //REFORMTA O NOME DO FUNCIONÁRIO PARA INICIAIS MAÍUSCULAS
     public static String employeeUpperCase(String nameEmployee) {
-        String[] palavras = nameEmployee.split(" ");
+        String[] palavras = nameEmployee.toLowerCase().split(" ");
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < palavras.length; i++) {
