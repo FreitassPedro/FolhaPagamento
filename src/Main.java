@@ -70,9 +70,10 @@ public class Main {
         sc.close();
         //Chama o método abaixo e imprime tudo
         imprimirPendencias(valor, nameEmployee);
+        System.out.println(employeeUpperCase(nameEmployee));
     }
 
-    //IDENTIFICA O MÊS ANTERIOR DO USUÁRIO
+    //IDENTIFICA O DATA ANTERIOR DO USUÁRIO
     public static String dataAnterior() {
         LocalDate currentDate = LocalDate.now().minusMonths(1);
         int currentYear = LocalDate.now().getYear();
@@ -86,6 +87,7 @@ public class Main {
         return previousMonth + "/" + currentYear;
     }
 
+    //IDENTIFICA O MÊS ANTERIOR DO PC DO USUÁRIO
     public static String dataSave() {
         String localData = dataAnterior();
         String[] partes = localData.split("/");
@@ -100,7 +102,7 @@ public class Main {
         criadorRepositorio(nameEmployee);
         dataSave();
 
-        String path = pathLocale(nameEmployee)
+        String path = pathLocale(employeeUpperCase(nameEmployee))
                 + "\\Folha.txt";
         FileWriter fileWriter = new FileWriter(path);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -128,17 +130,19 @@ public class Main {
         bufferedWriter.close();
     }
 
-    //IDENTIF
+
+    //MOSTRA O CAMINHO PARA SALVAR
     public static String pathLocale(String nameEmployee) {
         return ("C:\\Users\\CALL1\\Desktop\\SaidaFolha\\"
                 + dataSave()
                 + "\\"
-                + nameEmployee
+                + employeeUpperCase(nameEmployee)
                 + "\\");
     }
 
+    //CRIA UM DIRETÓRIO NO WINDOWS DO USUÁRIO PARA SALVAR O TXT
     public static void criadorRepositorio(String nameEmployee) {
-        Path directoryPath = Paths.get(pathLocale(nameEmployee));
+        Path directoryPath = Paths.get(pathLocale(employeeUpperCase(nameEmployee)));
 
         // Verifica se o diretório já existe
         if (Files.exists(directoryPath)) {
@@ -152,5 +156,25 @@ public class Main {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String employeeUpperCase(String nameEmployee) {
+        String[] palavras = nameEmployee.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < palavras.length; i++) {
+            String palavra = palavras[i];
+
+            // Converta a primeira letra para maiúscula
+            palavra = palavra.substring(0, 1).toUpperCase() + palavra.substring(1);
+
+            result.append(palavra);
+
+            // Adicione um espaço após cada palavra, exceto a última
+            if (i < palavras.length - 1) {
+                result.append(" ");
+            }
+        }
+        return result.toString();
     }
 }
