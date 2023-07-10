@@ -41,6 +41,7 @@ public class Main {
         String[] pendencias = escolha == 'F' ? Financeiro.PENDENCIAS : Promotores.PENDENCIAS;
         double ganhos = 0;
         double descontos = 0;
+        String inssIR = "INSS";
 
         // Pergunta o valor para cada pendência e adiciona na lista;
         for (int i = 0; i < pendencias.length; i++) {
@@ -48,7 +49,8 @@ public class Main {
 
             // pergunta pela porcentagem de INSS ou IR, caso seja uma dessas pendências
             if (pendencias[i].equals("(-)INSS %s R$ ") || pendencias[i].equals("(-)IR %s R$ ")) {
-                System.out.println("Porcentagem INSS/IR: ");
+                System.out.println("Porcentagem " + inssIR  + ": ");
+                inssIR = "IRRF";
                 String porcentagem = sc.next();
                 pergunta = String.format(pergunta, porcentagem + "%");
             }
@@ -59,7 +61,8 @@ public class Main {
 
             if (valorPendenciaStr.equalsIgnoreCase("b")) {
                 System.out.println("Voltando!");
-                i--; //Volta uma pendência
+                i -= 2; //Volta uma pendência
+                inssIR = "INSS";
             } else {
                 try {
                     double valorPendencia = Double.parseDouble(valorPendenciaStr.replace(",", "."));
@@ -105,7 +108,7 @@ public class Main {
     }
 
     //IMPRIME TUDO QUE FOI DIGITADO NO LOOP FOR
-    public static void imprimirPendencias(HashMap<String, Double> valor, String nameEmployee, Double ganhos, Double descontos) throws IOException {
+    public static void imprimirPendencias(HashMap<String, Double> valor, String nameEmployee, Double proventos, Double descontos) throws IOException {
         System.out.println();
         System.out.println();
         criadorRepositorio(nameEmployee);
@@ -137,8 +140,8 @@ public class Main {
             }
         }
         bufferedWriter.newLine();
-        double salarioTotal = ganhos - descontos;
-        bufferedWriter.write("Ganhos: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", ganhos));
+        double salarioTotal = proventos - descontos;
+        bufferedWriter.write("Proventos: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", proventos));
         bufferedWriter.newLine();
         bufferedWriter.write("Descontos: " + String.format(Locale.forLanguageTag("pt-BR"), "%,.2f", descontos));
         bufferedWriter.newLine();
@@ -162,12 +165,13 @@ public class Main {
 
         // Verifica se o diretório já existe
         if (Files.exists(directoryPath)) {
-            System.out.println("Directory already exists: " + directoryPath);
+            System.out.println("O diretório já existe:  " + directoryPath);
         } else {
             try {
                 // Cria o diretório
                 Files.createDirectories(directoryPath);
-                System.out.println("Directory created: " + directoryPath);
+                System.out.println("Diretório criado:  " + directoryPath);
+                System.out.println("--------------------------------------------------");
             } catch (IOException e) {
                 e.printStackTrace();
             }
