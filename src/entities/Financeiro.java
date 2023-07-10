@@ -10,6 +10,7 @@ public class Financeiro {
                 "(+)Horas Ferias R$ ",
                 "(+)Horas Extras 100% R$ ",
                 "(+)Refl Extras DSR R$ ",
+                "(+)Horas Afast Doença R$ ",
                 "(-)Vale Transporte R$ ",
                 "(-)Vale Refeição R$ ",
                 "(-)Plano de Saúde R$ ",
